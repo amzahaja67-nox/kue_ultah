@@ -22,7 +22,8 @@
     const fireworks = [];
 
     // Subtle, soft bokeh stars
-    for (let i = 0; i < 22; i++) {
+    // Keep the ambient background light while the fireworks remain unchanged.
+    for (let i = 0; i < 16; i++) {
       bokehs.push({
         x: Math.random() * width,
         y: Math.random() * height,
@@ -35,7 +36,7 @@
     }
 
     // Floating delicate gold dust
-    for (let i = 0; i < 45; i++) {
+    for (let i = 0; i < 30; i++) {
       dustParticles.push({
         x: Math.random() * width,
         y: Math.random() * height,
@@ -49,7 +50,7 @@
     }
 
     function addSmokeParticle(x, y) {
-      if (Math.random() > 0.6) return;
+      if (smokeParticles.length >= 40 || Math.random() > 0.35) return;
       smokeParticles.push({
         x: x + (Math.random() - 0.5) * 3,
         y: y,
@@ -75,6 +76,11 @@
           vRot: (Math.random() - 0.5) * 5,
           opacity: 0.9,
         });
+      }
+
+      // Avoid stacking old confetti when the button is pressed repeatedly.
+      if (confettis.length > 140) {
+        confettis.splice(0, confettis.length - 140);
       }
     }
 
@@ -134,6 +140,8 @@
       }
     }
 
+    const candleEl = document.getElementById('candleAssembly');
+
     function renderCanvas() {
       ctx.clearRect(0, 0, width, height);
 
@@ -175,7 +183,6 @@
       }
 
       // 3. Smoke Trail
-      const candleEl = document.getElementById('candleAssembly');
       if (candleEl) {
         const rect = candleEl.getBoundingClientRect();
         const candleX = rect.left + rect.width / 2;
